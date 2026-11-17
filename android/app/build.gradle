@@ -1,0 +1,48 @@
+plugins {
+    id 'com.android.application'
+}
+
+// The build number of the GitHub workflow run, so a newer APK installs over an older one
+def buildNo = (System.getenv('GITHUB_RUN_NUMBER') ?: '1') as Integer
+
+android {
+    namespace 'io.github.johnnie0210.portfee'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'io.github.johnnie0210.portfee'
+        minSdk 24
+        targetSdk 34
+        versionCode buildNo
+        versionName "1.0.${buildNo}"
+    }
+
+    // Sideload key kept in the repository so every build has the same signature (not for store release)
+    signingConfigs {
+        sideload {
+            storeFile file('sideload.keystore')
+            storePassword 'portfee'
+            keyAlias 'portfee'
+            keyPassword 'portfee'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.sideload
+        }
+    }
+
+    // The web app in public/ is packaged as it is
+    sourceSets {
+        main {
+            assets.srcDirs = ['../../public']
+        }
+    }
+
+    lint {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+}

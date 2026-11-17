@@ -247,7 +247,9 @@
       state.input = emptyInput();
       save(); fillInputs(); renderManual(); renderResult();
     });
-    $('btnPrint').addEventListener('click', function () { window.print(); });
+    $('btnPrint').addEventListener('click', function () {
+      if (window.AndroidApp && window.AndroidApp.print) { window.AndroidApp.print(); } else { window.print(); }
+    });
 
     $('in-gst').addEventListener('input', function (e) {
       var v = parseFloat(e.target.value);

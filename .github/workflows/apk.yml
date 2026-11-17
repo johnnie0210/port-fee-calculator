@@ -1,0 +1,36 @@
+# Builds the Android APK (web app packaged in a WebView) and attaches it to the "apk" release
+name: apk
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'android/**'
+      - 'public/**'
+      - '.github/workflows/apk.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - run: node --test test/calc.test.js
+      - run: gradle -p android assembleRelease --no-daemon
+      - run: cp android/app/build/outputs/apk/release/app-release.apk port-fee-calculator.apk
+      - name: Publish to the apk release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view apk >/dev/null 2>&1 || gh release create apk --title "Android APK" --notes "Latest APK build of the port fee calculator. Download port-fee-calculator.apk and open it on the phone."
+          gh release upload apk port-fee-calculator.apk --clobber

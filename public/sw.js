@@ -1,5 +1,5 @@
 /* Offline cache. Raise CACHE when files change so installed phones pick up the new version. */
-var CACHE = 'portfee-v1';
+var CACHE = 'portfee-v2';
 var FILES = [
   './', 'index.html', 'style.css', 'manifest.webmanifest',
   'js/data.js', 'js/calc.js', 'js/i18n.js', 'js/app.js',
