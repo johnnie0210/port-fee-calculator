@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b4f6c">
+  <title>항만 수수료 계산기</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <h1 data-i18n="appTitle"></h1>
+    <div class="top-actions">
+      <button id="btnInstall" class="btn ghost" hidden data-i18n="install"></button>
+      <button id="btnLang" class="btn ghost" data-i18n="langBtn"></button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Calculator -->
+    <section id="view-calc" class="view">
+      <div class="card">
+        <h2 data-i18n="secVessel"></h2>
+        <label class="field"><span data-i18n="vesselName"></span>
+          <input id="in-name" type="text" autocomplete="off"></label>
+        <label class="field"><span data-i18n="loa"></span>
+          <input id="in-loa" type="number" inputmode="decimal" min="0" step="any"></label>
+        <label class="check"><input id="in-exempt" type="checkbox">
+          <span><b data-i18n="exempt"></b><small data-i18n="exemptHint"></small></span></label>
+      </div>
+
+      <div class="card">
+        <h2 data-i18n="secAnchor"></h2>
+        <label class="field"><span data-i18n="anchCat"></span>
+          <select id="in-anchCat">
+            <option value="cargo" data-i18n="catCargo"></option>
+            <option value="fishing" data-i18n="catFishing"></option>
+            <option value="none" data-i18n="catNone"></option>
+          </select></label>
+        <label class="field"><span data-i18n="anchArr"></span>
+          <input id="in-anchArr" type="datetime-local"></label>
+        <label class="field"><span data-i18n="anchDep"></span>
+          <input id="in-anchDep" type="datetime-local"></label>
+      </div>
+
+      <div class="card">
+        <h2 data-i18n="secBerth"></h2>
+        <label class="field"><span data-i18n="berthCat"></span>
+          <select id="in-berthCat">
+            <option value="general" data-i18n="catGeneral"></option>
+            <option value="barge" data-i18n="catBarge"></option>
+            <option value="small" data-i18n="catSmall"></option>
+            <option value="none" data-i18n="catNone"></option>
+          </select></label>
+        <label class="field"><span data-i18n="berthArr"></span>
+          <input id="in-berthArr" type="datetime-local"></label>
+        <label class="field"><span data-i18n="berthDep"></span>
+          <input id="in-berthDep" type="datetime-local"></label>
+      </div>
+
+      <div class="card auto">
+        <h2 data-i18n="secAuto"></h2>
+        <dl id="autoList" class="auto-list"></dl>
+        <p class="hint" data-i18n="autoHint"></p>
+      </div>
+
+      <div class="card no-print-empty">
+        <h2 data-i18n="secManual"></h2>
+        <p class="hint" data-i18n="manualHint"></p>
+        <div id="manualList"></div>
+      </div>
+
+      <div id="warnings"></div>
+
+      <div class="card result">
+        <div class="card-head">
+          <h2 data-i18n="secResult"></h2>
+          <label class="check small no-print"><input id="in-showAll" type="checkbox"><span data-i18n="showAll"></span></label>
+        </div>
+        <p id="printVessel" class="print-only"></p>
+        <div id="lines"></div>
+        <dl class="totals">
+          <div><dt data-i18n="subtotal"></dt><dd id="outSubtotal"></dd></div>
+          <div><dt id="gstLabel"></dt><dd id="outGst"></dd></div>
+          <div class="grand"><dt data-i18n="total"></dt><dd id="outTotal"></dd></div>
+        </dl>
+      </div>
+
+      <div class="actions no-print">
+        <button id="btnExample" class="btn" data-i18n="btnExample"></button>
+        <button id="btnClear" class="btn" data-i18n="btnClear"></button>
+        <button id="btnPrint" class="btn primary" data-i18n="btnPrint"></button>
+      </div>
+    </section>
+
+    <!-- Rates -->
+    <section id="view-rates" class="view" hidden>
+      <div class="card">
+        <h2 data-i18n="ratesTitle"></h2>
+        <p class="hint" data-i18n="ratesHint"></p>
+        <div id="rateList"></div>
+        <label class="field gst-field"><span data-i18n="gstRate"></span>
+          <input id="in-gst" type="number" inputmode="decimal" min="0" step="any"></label>
+      </div>
+      <div class="actions">
+        <button id="btnResetRates" class="btn" data-i18n="btnResetRates"></button>
+      </div>
+    </section>
+
+    <!-- Holidays -->
+    <section id="view-holidays" class="view" hidden>
+      <div class="card">
+        <h2 data-i18n="holTitle"></h2>
+        <p class="hint" data-i18n="holHint"></p>
+        <div class="add-row">
+          <label class="field"><span data-i18n="holDate"></span><input id="hol-date" type="date"></label>
+          <label class="field grow"><span data-i18n="holName"></span><input id="hol-name" type="text" autocomplete="off"></label>
+          <button id="btnAddHoliday" class="btn primary" data-i18n="btnAdd"></button>
+        </div>
+        <ul id="holidayList" class="list"></ul>
+      </div>
+      <div class="actions">
+        <button id="btnResetHolidays" class="btn" data-i18n="btnResetHolidays"></button>
+      </div>
+    </section>
+
+    <!-- Anchorages -->
+    <section id="view-anch" class="view" hidden>
+      <div class="card">
+        <h2 data-i18n="anchTitle"></h2>
+        <p class="hint" data-i18n="anchHint"></p>
+        <ol id="anchList" class="list numbered"></ol>
+      </div>
+    </section>
+  </main>
+
+  <div id="totalBar" class="total-bar no-print">
+    <span data-i18n="total"></span><strong id="barTotal"></strong>
+  </div>
+
+  <nav class="tabs no-print">
+    <button data-view="calc" class="on" data-i18n="tabCalc"></button>
+    <button data-view="rates" data-i18n="tabRates"></button>
+    <button data-view="holidays" data-i18n="tabHolidays"></button>
+    <button data-view="anch" data-i18n="tabAnch"></button>
+  </nav>
+
+  <script src="js/data.js"></script>
+  <script src="js/calc.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

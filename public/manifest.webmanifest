@@ -1,0 +1,17 @@
+{
+  "name": "항만 수수료 계산기 (Port Fee Calculator)",
+  "short_name": "항만수수료",
+  "description": "항만 수수료 18종 계산 / Port fee calculator (18 fee types)",
+  "lang": "ko",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b4f6c",
+  "theme_color": "#0b4f6c",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
