@@ -15,6 +15,8 @@
 | `test/calc.test.js` | 계산 검증 (`node --test test/calc.test.js`) |
 | `tools/make-icons.js` | 아이콘 다시 만들기 (`node tools/make-icons.js`) |
 | `.github/workflows/pages.yml` | GitHub Pages 배포 |
+| `android/` | 안드로이드 APK용 껍데기 앱 (`public/`을 그대로 담아 WebView로 표시) |
+| `.github/workflows/apk.yml` | APK 빌드 후 `apk` 릴리스에 첨부 |
 
 ## GitHub에 올리고 휴대폰에 설치
 
@@ -30,6 +32,16 @@
 4. 휴대폰 크롬으로 그 주소를 열고, 화면 위 **앱 설치** 버튼이나 크롬 메뉴의 **앱 설치 / 홈 화면에 추가**를 누릅니다.
 
 - 무료 계정은 공개(Public) 저장소에서만 Pages를 쓸 수 있습니다.
+
+## APK로 설치
+
+휴대폰에서 아래 주소를 열어 내려받은 뒤 파일을 열면 설치됩니다. 처음에는 "출처를 알 수 없는 앱 설치" 허용을 묻습니다.
+
+https://github.com/johnnie0210/port-fee-calculator/releases/download/apk/port-fee-calculator.apk
+
+- `public/`이나 `android/`를 고쳐 푸시하면 APK가 다시 만들어져 같은 주소에 올라갑니다. 새 파일을 내려받아 열면 기존 앱 위에 업데이트됩니다.
+- APK 앱과 크롬으로 설치한 앱은 서로 다른 앱이라 저장된 요율·공휴일·입력값을 공유하지 않습니다.
+- 서명 키(`android/app/sideload.keystore`)는 매번 같은 서명으로 빌드하려고 저장소에 넣어 둔 직접 설치용 키입니다. 스토어 등록용으로는 쓰지 않습니다.
 
 ## 수정 후 배포
 
